@@ -20,6 +20,11 @@ spec:
         ports:
         - containerPort: 80
           protocol: TCP
+        env:
+         - name: USERPROFILE_API_ENDPOINT
+           value: http://userprofile.tripinsightsapi.svc.cluster.local
+         - name: TRIPS_API_ENDPOINT
+           value: http://trips.tripinsightsapi.svc.cluster.local
 ---
 apiVersion: v1
 kind: Service
