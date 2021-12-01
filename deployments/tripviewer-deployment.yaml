@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tripviewer-deployment
+  namespace: tripinsightsapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tripviewer
+  template:
+    metadata:
+      labels:
+        app: tripviewer
+    spec:
+     containers:
+      - image: registryzlt8225.azurecr.io/tripinsights/tripviewer:1.0
+        imagePullPolicy: IfNotPresent
+        name: poi
+        ports:
+        - containerPort: 80
+          protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: tripviewer
+  name: tripviewer-service
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: tripviewer
+  sessionAffinity: None
+  type: LoadBalancer
