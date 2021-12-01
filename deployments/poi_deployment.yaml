@@ -18,29 +18,44 @@ spec:
         tier: api
     spec:
       containers:
-      - name: poi
-        image: registryzlt8225.azurecr.io/tripinsights/poi:1.0
-        imagePullPolicy: IfNotPresent
-        ports:
-        - containerPort: 8080
-        env:
-        - name: SQL_SERVER
-          valueFrom:
-            secretKeyRef:
-              name: mydrivingdb-secret
-              key: SQL_SERVER
-        - name: SQL_DBNAME
-          valueFrom:
-            secretKeyRef:
-              name: mydrivingdb-secret
-              key: SQL_DBNAME
-        - name: SQL_USER
-          valueFrom:
-            secretKeyRef:
-              name: mydrivingdb-secret
-              key: SQL_USER
-        - name: SQL_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mydrivingdb-secret
-              key: SQL_PASSWORD
+        - name: poi
+          image: registryzlt8225.azurecr.io/tripinsights/poi:1.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SQL_SERVER
+              valueFrom:
+                secretKeyRef:
+                  name: mydrivingdb-secret
+                  key: SQL_SERVER
+            - name: SQL_DBNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mydrivingdb-secret
+                  key: SQL_DBNAME
+            - name: SQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mydrivingdb-secret
+                  key: SQL_USER
+            - name: SQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mydrivingdb-secret
+                  key: SQL_PASSWORD
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: poi
+  labels:
+    run: poi
+spec:
+  type: ClusterIP
+  selector:
+    app: poi  
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 8080
