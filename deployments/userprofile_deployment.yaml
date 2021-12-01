@@ -44,3 +44,18 @@ spec:
                 secretKeyRef:
                   name: mydrivingdb-secret
                   key: SQL_PASSWORD
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: userprofile
+  labels:
+    app: userprofile
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: userprofile
