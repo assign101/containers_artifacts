@@ -13,33 +13,33 @@ spec:
       labels:
         app: user-java
     spec:
-      containers: 
-      - name: user-java
-        image: registryzlt8225.azurecr.io/tripinsights/user-java:1.0
-        imagePullPolicy: IfNotPresent
-        ports:
-        - containerPort: 80
-        env:
-        - name: SQL_SERVER
-          valueFrom:
-            secretKeyRef:
-              name: mydrivingdb-secret
-              key: SQL_SERVER
-        - name: SQL_DBNAME
-          valueFrom:
-            secretKeyRef:
-              name: mydrivingdb-secret
-              key: SQL_DBNAME
-        - name: SQL_USER
-          valueFrom:
-            secretKeyRef:
-              name: mydrivingdb-secret
-              key: SQL_USER
-        - name: SQL_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mydrivingdb-secret
-              key: SQL_PASSWORD
+      containers:
+        - name: user-java
+          image: registryzlt8225.azurecr.io/tripinsights/user-java:1.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          env:
+            - name: SQL_SERVER
+              valueFrom:
+                secretKeyRef:
+                  name: mydrivingdb-secret
+                  key: SQL_SERVER
+            - name: SQL_DBNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mydrivingdb-secret
+                  key: SQL_DBNAME
+            - name: SQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mydrivingdb-secret
+                  key: SQL_USER
+            - name: SQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mydrivingdb-secret
+                  key: SQL_PASSWORD
 ---
 apiVersion: v1
 kind: Service
@@ -47,11 +47,12 @@ metadata:
   name: user-java
   labels:
     run: user-java
+  namespace: api
 spec:
   type: ClusterIP
   ports:
-  - port: 80
-    protocol: TCP
-    targetPort: 80
+    - port: 80
+      protocol: TCP
+      targetPort: 80
   selector:
     app: user-java
