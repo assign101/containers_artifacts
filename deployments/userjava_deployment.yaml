@@ -13,33 +13,23 @@ spec:
       labels:
         app: user-java
     spec:
+      volumes:
+        - name: secrets-store-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "tripinsights-keyvault"
       containers: 
       - name: user-java
         image: registryzlt8225.azurecr.io/tripinsights/user-java:1.0
         imagePullPolicy: IfNotPresent
         ports:
-        - containerPort: 80
-        env:
-        - name: SQL_SERVER
-          valueFrom:
-            secretKeyRef:
-              name: mydrivingdb-secret
-              key: SQL_SERVER
-        - name: SQL_DBNAME
-          valueFrom:
-            secretKeyRef:
-              name: mydrivingdb-secret
-              key: SQL_DBNAME
-        - name: SQL_USER
-          valueFrom:
-            secretKeyRef:
-              name: mydrivingdb-secret
-              key: SQL_USER
-        - name: SQL_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mydrivingdb-secret
-              key: SQL_PASSWORD
+          - containerPort: 80
+        volumeMounts:
+        - name: secrets-store-inline 
+          mountPath: "/secrets"
+          readOnly: true  
 ---
 apiVersion: v1
 kind: Service
