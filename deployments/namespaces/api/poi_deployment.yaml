@@ -15,33 +15,24 @@ spec:
       labels:
         app: poi
     spec:
+      volumes:
+        - name: secrets-store-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "tripinsights-keyvault"
       containers:
         - name: poi
           image: registryzlt8225.azurecr.io/tripinsights/poi:1.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
-          env:
-            - name: SQL_SERVER
-              valueFrom:
-                secretKeyRef:
-                  name: mydrivingdb-secret
-                  key: SQL_SERVER
-            - name: SQL_DBNAME
-              valueFrom:
-                secretKeyRef:
-                  name: mydrivingdb-secret
-                  key: SQL_DBNAME
-            - name: SQL_USER
-              valueFrom:
-                secretKeyRef:
-                  name: mydrivingdb-secret
-                  key: SQL_USER
-            - name: SQL_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: mydrivingdb-secret
-                  key: SQL_PASSWORD
+          volumeMounts:
+          - name: secrets-store-inline 
+            mountPath: "/secrets"
+            readOnly: true  
+          
 ---
 apiVersion: v1
 kind: Service
