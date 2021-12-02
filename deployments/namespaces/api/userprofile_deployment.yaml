@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: userprofile-deployment
+  labels:
+    app: userprofile
+  namespace: api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: userprofile
+  template:
+    metadata:
+      labels:
+        app: userprofile
+    spec:
+      containers:
+        - name: userprofile
+          image: registryzlt8225.azurecr.io/tripinsights/userprofile:1.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          env:
+            - name: SQL_SERVER
+              valueFrom:
+                secretKeyRef:
+                  name: mydrivingdb-secret
+                  key: SQL_SERVER
+            - name: SQL_DBNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mydrivingdb-secret
+                  key: SQL_DBNAME
+            - name: SQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mydrivingdb-secret
+                  key: SQL_USER
+            - name: SQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mydrivingdb-secret
+                  key: SQL_PASSWORD
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: userprofile
+  labels:
+    app: userprofile
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: userprofile
